@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import $ from "jquery";
 const URL_BASE = "http://localhost:1999";
@@ -24,19 +26,15 @@ function CreateTodo() {
     }).then((res) => res.json());
   };
 
-  $(function () {
-    var dtToday = new Date();
-
-    var month = dtToday.getMonth() + 1;
-    var day = dtToday.getDate();
-    var year = dtToday.getFullYear();
-    if (month < 10) month = "0" + month.toString();
-    if (day < 10) day = "0" + day.toString();
-
-    var maxDate = year + "-" + month + "-" + day;
-    $("#txtDate").attr("min", maxDate);
-  });
-
+  const onSetDate = (data) => {
+    console.log(data);
+    const formated = `${data.getFullYear()}-${data.getMonth()}-${
+      data.getDate().toString().length < 2
+        ? "0" + data.getDate()
+        : data.getDate()
+    }`;
+    setDate(formated);
+  };
   return (
     <div className="Home">
       <h1>Add new todo</h1>
@@ -60,6 +58,7 @@ function CreateTodo() {
         type="date"
         onChange={(e) => setDate(e.target.value)}
       ></input>
+      <DatePicker onChange={(data) => onSetDate(data)} minDate={new Date()} />
 
       <Link to="/">
         <button onClick={() => createTodo()}>Create Todo</button>
